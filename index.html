@@ -1358,19 +1358,41 @@
     });
   }
 
-  // Waitlist
-  let count = 1411;
+  // Waitlist — Google Sheets backend
+  const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby6x7HVUUPVSaDPthBhMT77WEzer9-CP2JckhaMvB3tA5bxV2dBPIUUltLAfv2VZywW/exec';
+
   function joinWaitlist() {
-    const email = document.getElementById('wl-email').value;
-    if (!email || !email.includes('@')) {
+    const email = document.getElementById('wl-email').value.trim();
+    const btn = document.querySelector('.waitlist-btn');
+
+    if (!email || !email.includes('@') || !email.includes('.')) {
       document.getElementById('wl-email').style.borderColor = '#F66B6B';
       setTimeout(() => document.getElementById('wl-email').style.borderColor = '', 1500);
       return;
     }
-    count++;
-    document.getElementById('wl-form').style.display = 'none';
-    document.getElementById('wl-num').textContent = count.toLocaleString();
-    document.getElementById('wl-success').classList.add('show');
+
+    // Loading state
+    btn.textContent = 'Saving your spot...';
+    btn.disabled = true;
+    btn.style.opacity = '0.7';
+
+    fetch(SCRIPT_URL, {
+      method: 'POST',
+      mode: 'no-cors',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: 'email=' + encodeURIComponent(email)
+    })
+    .then(() => {
+      // no-cors means we can't read the response, but if no error = success
+      document.getElementById('wl-form').style.display = 'none';
+      document.getElementById('wl-success').classList.add('show');
+    })
+    .catch(() => {
+      btn.textContent = 'Something went wrong — try again';
+      btn.disabled = false;
+      btn.style.opacity = '1';
+      btn.style.background = '#F66B6B';
+    });
   }
 
   // Enter key on waitlist
