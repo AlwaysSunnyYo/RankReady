@@ -1,0 +1,1382 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RankReady.ai — Know Why Your Listings Aren't Selling</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0A0B0F;
+    --bg2: #111318;
+    --bg3: #181B22;
+    --card: #13151C;
+    --border: rgba(255,255,255,0.07);
+    --border2: rgba(255,255,255,0.12);
+    --text: #F0EEE8;
+    --muted: #8A8880;
+    --dim: #4A4A46;
+    --accent: #4F9CF9;
+    --accent2: #2D7DD2;
+    --orange: #F56400;
+    --orange2: #D45500;
+    --orange-glow: rgba(245,100,0,0.15);
+    --orange-tint: rgba(245,100,0,0.08);
+    --gold: #F4C842;
+    --green: #3ECF8E;
+    --red: #F66B6B;
+    --amber: #F4A742;
+    --r: 12px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 16px;
+    line-height: 1.6;
+    overflow-x: hidden;
+  }
+
+  h1, h2, h3, h4, .logo { font-family: 'Syne', sans-serif; }
+
+  /* ── NOISE OVERLAY ── */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
+    opacity: 0.025;
+    pointer-events: none;
+    z-index: 1000;
+  }
+
+  /* ── GRID PATTERN ── */
+  .grid-bg {
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(245,100,0,0.035) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(245,100,0,0.035) 1px, transparent 1px);
+    background-size: 48px 48px;
+    mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, black 0%, transparent 80%);
+  }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    padding: 18px 40px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid transparent;
+    transition: all 0.3s;
+    backdrop-filter: blur(0px);
+  }
+  nav.scrolled {
+    background: rgba(10,11,15,0.85);
+    border-color: var(--border);
+    backdrop-filter: blur(20px);
+  }
+  .logo {
+    font-size: 20px;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+    color: var(--text);
+    text-decoration: none;
+  }
+  .logo em { color: #F56400; font-style: normal; }
+  .logo sup {
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--muted);
+    letter-spacing: 1px;
+    margin-left: 2px;
+    font-family: 'DM Sans', sans-serif;
+  }
+  .nav-right {
+    display: flex;
+    align-items: center;
+    gap: 28px;
+  }
+  .nav-link {
+    font-size: 14px;
+    color: var(--muted);
+    text-decoration: none;
+    transition: color 0.2s;
+    font-family: 'DM Sans', sans-serif;
+  }
+  .nav-link:hover { color: var(--text); }
+  .btn-nav {
+    background: #F56400;
+    color: #fff;
+    padding: 9px 20px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 500;
+    text-decoration: none;
+    transition: background 0.2s, transform 0.1s;
+    font-family: 'DM Sans', sans-serif;
+  }
+  .btn-nav:hover { background: #D45500; transform: translateY(-1px); }
+
+  /* ── HERO ── */
+  .hero {
+    position: relative;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 120px 24px 80px;
+    overflow: hidden;
+  }
+
+  .hero-glow {
+    position: absolute;
+    top: -20%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 900px;
+    height: 600px;
+    background:
+      radial-gradient(ellipse 60% 80% at 40% 50%, rgba(245,100,0,0.09) 0%, transparent 60%),
+      radial-gradient(ellipse 60% 80% at 60% 50%, rgba(79,156,249,0.1) 0%, transparent 60%);
+    pointer-events: none;
+  }
+
+  .hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    background: rgba(245,100,0,0.1);
+    border: 1px solid rgba(245,100,0,0.28);
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 500;
+    color: #F56400;
+    letter-spacing: 0.5px;
+    margin-bottom: 32px;
+    opacity: 0;
+    animation: fadeUp 0.6s ease 0.2s forwards;
+  }
+  .badge-dot {
+    width: 6px; height: 6px;
+    background: #F56400;
+    border-radius: 50%;
+    animation: pulse 2s ease infinite;
+  }
+  @keyframes pulse {
+    0%,100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.5; transform: scale(1.4); }
+  }
+
+  .hero h1 {
+    font-size: clamp(44px, 7vw, 80px);
+    font-weight: 800;
+    line-height: 1.05;
+    letter-spacing: -2px;
+    color: var(--text);
+    max-width: 820px;
+    opacity: 0;
+    animation: fadeUp 0.7s ease 0.35s forwards;
+  }
+  .hero h1 .line2 {
+    color: transparent;
+    -webkit-text-stroke: 1.5px rgba(240,238,232,0.35);
+  }
+  .hero h1 .highlight {
+    color: #F56400;
+    -webkit-text-stroke: 0;
+  }
+
+  .hero-sub {
+    font-size: 18px;
+    color: var(--muted);
+    max-width: 520px;
+    margin: 24px auto 0;
+    line-height: 1.6;
+    font-weight: 300;
+    opacity: 0;
+    animation: fadeUp 0.7s ease 0.5s forwards;
+  }
+
+  .hero-cta {
+    display: flex;
+    gap: 14px;
+    align-items: center;
+    justify-content: center;
+    margin-top: 40px;
+    flex-wrap: wrap;
+    opacity: 0;
+    animation: fadeUp 0.7s ease 0.65s forwards;
+  }
+
+  .btn-primary {
+    background: #F56400;
+    color: #fff;
+    padding: 16px 32px;
+    border-radius: 10px;
+    font-size: 15px;
+    font-weight: 500;
+    text-decoration: none;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: 'DM Sans', sans-serif;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .btn-primary:hover {
+    background: #D45500;
+    transform: translateY(-2px);
+    box-shadow: 0 12px 32px rgba(245,100,0,0.35);
+  }
+  .btn-ghost {
+    background: transparent;
+    color: var(--muted);
+    padding: 16px 24px;
+    border-radius: 10px;
+    font-size: 15px;
+    font-weight: 400;
+    text-decoration: none;
+    border: 1px solid var(--border2);
+    transition: all 0.2s;
+    font-family: 'DM Sans', sans-serif;
+  }
+  .btn-ghost:hover {
+    color: var(--text);
+    border-color: rgba(255,255,255,0.2);
+  }
+
+  .hero-social {
+    margin-top: 28px;
+    font-size: 13px;
+    color: var(--dim);
+    opacity: 0;
+    animation: fadeUp 0.7s ease 0.8s forwards;
+  }
+  .hero-social strong { color: var(--muted); }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ── DEMO CARD ── */
+  .demo-wrap {
+    padding: 0 24px 100px;
+    max-width: 1000px;
+    margin: 0 auto;
+    opacity: 0;
+    animation: fadeUp 0.8s ease 1s forwards;
+  }
+
+  .demo-card {
+    background: var(--card);
+    border: 1px solid var(--border2);
+    border-radius: 18px;
+    overflow: hidden;
+    box-shadow: 0 40px 80px rgba(0,0,0,0.5);
+  }
+
+  .demo-topbar {
+    background: var(--bg3);
+    padding: 14px 20px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    border-bottom: 1px solid var(--border);
+  }
+  .dots { display: flex; gap: 6px; }
+  .dot { width: 11px; height: 11px; border-radius: 50%; }
+  .dot-r { background: #FF5F57; }
+  .dot-y { background: #FEBC2E; }
+  .dot-g { background: #28C840; }
+  .demo-url {
+    flex: 1;
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 6px 12px;
+    font-size: 12px;
+    color: var(--muted);
+    font-family: 'DM Mono', monospace;
+  }
+
+  .demo-body {
+    display: grid;
+    grid-template-columns: 1fr 340px;
+    min-height: 420px;
+  }
+
+  .demo-listing {
+    padding: 28px;
+    border-right: 1px solid var(--border);
+  }
+  .listing-img {
+    width: 100%;
+    aspect-ratio: 1;
+    max-width: 220px;
+    background: var(--bg3);
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 48px;
+    margin-bottom: 16px;
+    position: relative;
+    overflow: hidden;
+  }
+  .listing-img::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(79,156,249,0.05), transparent);
+  }
+  .listing-title {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text);
+    margin-bottom: 6px;
+    font-family: 'Syne', sans-serif;
+  }
+  .listing-meta { font-size: 12px; color: var(--muted); }
+  .listing-price {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--text);
+    margin-top: 10px;
+    font-family: 'Syne', sans-serif;
+  }
+
+  .demo-score {
+    padding: 24px;
+  }
+  .score-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+  }
+  .score-label {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 1.5px;
+    color: var(--muted);
+    text-transform: uppercase;
+    font-family: 'Syne', sans-serif;
+  }
+  .score-big {
+    font-size: 52px;
+    font-weight: 800;
+    font-family: 'Syne', sans-serif;
+    line-height: 1;
+  }
+  .score-big.poor { color: var(--red); }
+  .score-big.ok { color: var(--amber); }
+  .score-big.good { color: var(--green); }
+
+  .score-ring-wrap {
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  .score-ring {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+  }
+
+  .dimensions { display: flex; flex-direction: column; gap: 10px; }
+  .dim-row { display: flex; flex-direction: column; gap: 4px; }
+  .dim-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .dim-name { font-size: 12px; color: var(--muted); }
+  .dim-val { font-size: 12px; font-weight: 500; font-family: 'Syne', sans-serif; }
+  .dim-val.poor { color: var(--red); }
+  .dim-val.ok { color: var(--amber); }
+  .dim-val.good { color: var(--green); }
+  .dim-bar {
+    height: 4px;
+    background: var(--bg3);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+  .dim-fill {
+    height: 100%;
+    border-radius: 2px;
+    transition: width 1.5s cubic-bezier(0.16, 1, 0.3, 1);
+    width: 0;
+  }
+  .dim-fill.poor { background: var(--red); }
+  .dim-fill.ok { background: var(--amber); }
+  .dim-fill.good { background: var(--green); }
+
+  .fix-btn {
+    width: 100%;
+    margin-top: 18px;
+    background: rgba(245,100,0,0.09);
+    border: 1px solid rgba(245,100,0,0.28);
+    color: #F56400;
+    padding: 11px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: 'DM Sans', sans-serif;
+  }
+  .fix-btn:hover {
+    background: rgba(245,100,0,0.15);
+    transform: translateY(-1px);
+  }
+
+  /* ── SECTIONS ── */
+  section { padding: 100px 24px; }
+  .container { max-width: 1060px; margin: 0 auto; }
+
+  .section-label {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    color: #F56400;
+    text-transform: uppercase;
+    font-family: 'Syne', sans-serif;
+    margin-bottom: 14px;
+  }
+  .section-title {
+    font-size: clamp(30px, 4vw, 46px);
+    font-weight: 800;
+    letter-spacing: -1.5px;
+    line-height: 1.1;
+    margin-bottom: 18px;
+  }
+  .section-sub {
+    font-size: 17px;
+    color: var(--muted);
+    max-width: 520px;
+    font-weight: 300;
+    line-height: 1.65;
+  }
+
+  /* ── HOW IT WORKS ── */
+  .steps {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2px;
+    margin-top: 64px;
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    overflow: hidden;
+  }
+  .step {
+    padding: 40px 36px;
+    background: var(--card);
+    position: relative;
+    transition: background 0.2s;
+  }
+  .step:hover { background: var(--bg3); }
+  .step::after {
+    content: '';
+    position: absolute;
+    right: 0; top: 20%; bottom: 20%;
+    width: 1px;
+    background: var(--border);
+  }
+  .step:last-child::after { display: none; }
+  .step-num {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    color: #F56400;
+    font-family: 'Syne', sans-serif;
+    margin-bottom: 20px;
+    opacity: 0.8;
+  }
+  .step-icon {
+    font-size: 32px;
+    margin-bottom: 16px;
+    display: block;
+  }
+  .step h3 {
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 10px;
+    letter-spacing: -0.5px;
+  }
+  .step p {
+    font-size: 14px;
+    color: var(--muted);
+    line-height: 1.6;
+    font-weight: 300;
+  }
+
+  /* ── FEATURES ── */
+  .features-section { background: var(--bg2); }
+  .features-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+    margin-top: 64px;
+  }
+  .feature-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 36px;
+    transition: border-color 0.2s, transform 0.2s;
+    cursor: default;
+  }
+  .feature-card:hover {
+    border-color: var(--border2);
+    transform: translateY(-3px);
+  }
+  .feature-card.wide { grid-column: span 2; }
+  .feature-icon {
+    width: 48px; height: 48px;
+    background: rgba(245,100,0,0.09);
+    border: 1px solid rgba(245,100,0,0.2);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    margin-bottom: 20px;
+  }
+  .feature-card h3 {
+    font-size: 19px;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+    margin-bottom: 10px;
+  }
+  .feature-card p {
+    font-size: 14px;
+    color: var(--muted);
+    line-height: 1.65;
+    font-weight: 300;
+  }
+  .feature-tag {
+    display: inline-block;
+    margin-top: 14px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    color: var(--green);
+    background: rgba(62,207,142,0.1);
+    border: 1px solid rgba(62,207,142,0.2);
+    padding: 3px 10px;
+    border-radius: 20px;
+  }
+  .feature-tag.pro {
+    color: var(--gold);
+    background: rgba(244,200,66,0.1);
+    border-color: rgba(244,200,66,0.2);
+  }
+
+  /* ── 7 DIMENSIONS ── */
+  .dims-section { padding: 100px 24px; }
+  .dims-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 10px;
+    margin-top: 60px;
+  }
+  .dim-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 24px 16px;
+    text-align: center;
+    transition: all 0.2s;
+    cursor: default;
+  }
+  .dim-card:hover {
+    border-color: #F56400;
+    transform: translateY(-4px);
+    box-shadow: 0 12px 30px rgba(245,100,0,0.12);
+  }
+  .dim-card-icon { font-size: 24px; margin-bottom: 10px; }
+  .dim-card-name {
+    font-size: 12px;
+    font-weight: 600;
+    font-family: 'Syne', sans-serif;
+    color: var(--text);
+    margin-bottom: 6px;
+    letter-spacing: -0.3px;
+  }
+  .dim-card-desc {
+    font-size: 11px;
+    color: var(--dim);
+    line-height: 1.5;
+  }
+
+  /* ── PRICING ── */
+  .pricing-section { background: var(--bg2); }
+  .pricing-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin-top: 60px;
+    align-items: start;
+  }
+  .pricing-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    padding: 36px;
+    position: relative;
+  }
+  .pricing-card.featured {
+    border-color: #F56400;
+    background: rgba(245,100,0,0.04);
+  }
+  .featured-badge {
+    position: absolute;
+    top: -12px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #F56400;
+    color: #fff;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 4px 14px;
+    border-radius: 20px;
+    letter-spacing: 0.5px;
+    font-family: 'Syne', sans-serif;
+    white-space: nowrap;
+  }
+  .plan-name {
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    color: var(--muted);
+    text-transform: uppercase;
+    font-family: 'Syne', sans-serif;
+    margin-bottom: 10px;
+  }
+  .plan-price {
+    font-size: 42px;
+    font-weight: 800;
+    font-family: 'Syne', sans-serif;
+    letter-spacing: -2px;
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+  .plan-price span {
+    font-size: 16px;
+    font-weight: 400;
+    color: var(--muted);
+    letter-spacing: 0;
+  }
+  .plan-desc {
+    font-size: 13px;
+    color: var(--muted);
+    margin-bottom: 28px;
+    padding-bottom: 24px;
+    border-bottom: 1px solid var(--border);
+    font-weight: 300;
+  }
+  .plan-features { list-style: none; display: flex; flex-direction: column; gap: 12px; }
+  .plan-features li {
+    font-size: 13px;
+    color: var(--muted);
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+  }
+  .plan-features li.yes { color: var(--text); }
+  .plan-check { color: var(--green); font-weight: 700; min-width: 14px; }
+  .plan-x { color: var(--dim); min-width: 14px; }
+  .plan-cta {
+    margin-top: 28px;
+    width: 100%;
+    padding: 14px;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 500;
+    font-family: 'DM Sans', sans-serif;
+    cursor: pointer;
+    transition: all 0.2s;
+    border: none;
+    text-align: center;
+    text-decoration: none;
+    display: block;
+  }
+  .plan-cta.primary {
+    background: #F56400;
+    color: #fff;
+  }
+  .plan-cta.primary:hover {
+    background: #D45500;
+    transform: translateY(-1px);
+    box-shadow: 0 8px 24px rgba(245,100,0,0.35);
+  }
+  .plan-cta.ghost {
+    background: transparent;
+    border: 1px solid var(--border2);
+    color: var(--muted);
+  }
+  .plan-cta.ghost:hover {
+    color: var(--text);
+    border-color: rgba(255,255,255,0.2);
+  }
+
+  /* ── WAITLIST ── */
+  .waitlist-section {
+    padding: 120px 24px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .waitlist-glow {
+    position: absolute;
+    bottom: -30%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 700px;
+    height: 500px;
+    background: radial-gradient(ellipse at center, rgba(245,100,0,0.1) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .waitlist-section .section-title { max-width: 600px; margin: 0 auto 16px; }
+  .waitlist-section .section-sub { margin: 0 auto 48px; }
+
+  .waitlist-form {
+    display: flex;
+    gap: 12px;
+    max-width: 480px;
+    margin: 0 auto;
+    justify-content: center;
+  }
+  .waitlist-input {
+    flex: 1;
+    background: var(--card);
+    border: 1px solid var(--border2);
+    border-radius: 10px;
+    padding: 15px 18px;
+    font-size: 15px;
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  .waitlist-input:focus {
+    border-color: #F56400;
+    box-shadow: 0 0 0 3px rgba(245,100,0,0.12);
+  }
+  .waitlist-input::placeholder { color: var(--dim); }
+  .waitlist-btn {
+    background: #F56400;
+    color: #fff;
+    border: none;
+    padding: 15px 28px;
+    border-radius: 10px;
+    font-size: 15px;
+    font-weight: 500;
+    cursor: pointer;
+    font-family: 'DM Sans', sans-serif;
+    transition: all 0.2s;
+    white-space: nowrap;
+  }
+  .waitlist-btn:hover {
+    background: #D45500;
+    transform: translateY(-1px);
+    box-shadow: 0 8px 24px rgba(245,100,0,0.35);
+  }
+  .waitlist-note {
+    font-size: 12px;
+    color: var(--dim);
+    margin-top: 16px;
+  }
+  .waitlist-success {
+    display: none;
+    background: rgba(62,207,142,0.1);
+    border: 1px solid rgba(62,207,142,0.25);
+    border-radius: 12px;
+    padding: 20px 32px;
+    color: var(--green);
+    font-size: 15px;
+    max-width: 480px;
+    margin: 0 auto;
+  }
+  .waitlist-success.show { display: block; }
+
+  /* ── FOOTER ── */
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 40px 24px;
+    text-align: center;
+  }
+  .footer-inner {
+    max-width: 1060px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .footer-copy { font-size: 13px; color: var(--dim); }
+  .footer-links { display: flex; gap: 20px; }
+  .footer-link { font-size: 13px; color: var(--dim); text-decoration: none; transition: color 0.2s; }
+  .footer-link:hover { color: var(--muted); }
+
+  /* ── SCROLL REVEAL ── */
+  .reveal {
+    opacity: 0;
+    transform: translateY(28px);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+  }
+  .reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* ── TICKER ── */
+  .ticker-wrap {
+    overflow: hidden;
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    background: var(--bg2);
+    padding: 12px 0;
+    margin-bottom: 0;
+  }
+  .ticker {
+    display: flex;
+    gap: 60px;
+    animation: ticker 30s linear infinite;
+    white-space: nowrap;
+  }
+  .ticker-item {
+    font-size: 12px;
+    color: var(--dim);
+    font-family: 'Syne', sans-serif;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .ticker-item::before {
+    content: '';
+    width: 4px; height: 4px;
+    background: #F56400;
+    border-radius: 50%;
+  }
+  @keyframes ticker {
+    from { transform: translateX(0); }
+    to { transform: translateX(-50%); }
+  }
+
+  /* ── STAT BAR ── */
+  .stat-bar {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    overflow: hidden;
+    margin-top: 80px;
+  }
+  .stat-item {
+    padding: 36px 32px;
+    border-right: 1px solid var(--border);
+    text-align: center;
+  }
+  .stat-item:last-child { border-right: none; }
+  .stat-num {
+    font-size: 44px;
+    font-weight: 800;
+    font-family: 'Syne', sans-serif;
+    letter-spacing: -2px;
+    color: var(--text);
+    line-height: 1;
+  }
+  .stat-num span { color: #F56400; }
+  .stat-label { font-size: 13px; color: var(--muted); margin-top: 8px; font-weight: 300; }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 768px) {
+    nav { padding: 16px 20px; }
+    .nav-right .nav-link { display: none; }
+    .demo-body { grid-template-columns: 1fr; }
+    .demo-score { border-top: 1px solid var(--border); }
+    .steps { grid-template-columns: 1fr; }
+    .step::after { display: none; }
+    .features-grid { grid-template-columns: 1fr; }
+    .feature-card.wide { grid-column: span 1; }
+    .dims-grid { grid-template-columns: repeat(4, 1fr); }
+    .pricing-grid { grid-template-columns: 1fr; }
+    .waitlist-form { flex-direction: column; }
+    .footer-inner { flex-direction: column; gap: 16px; }
+    .stat-bar { grid-template-columns: 1fr; }
+    .stat-item { border-right: none; border-bottom: 1px solid var(--border); }
+    .stat-item:last-child { border-bottom: none; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav id="nav">
+  <a href="#" class="logo">Rank<em>Ready</em><sup>.AI</sup></a>
+  <div class="nav-right">
+    <a href="#how" class="nav-link">How it works</a>
+    <a href="#features" class="nav-link">Features</a>
+    <a href="#pricing" class="nav-link">Pricing</a>
+    <a href="#waitlist" class="btn-nav">Get early access →</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="grid-bg"></div>
+  <div class="hero-glow"></div>
+
+  <div class="hero-badge">
+    <div class="badge-dot"></div>
+    Built for the 2025 algorithm shift
+  </div>
+
+  <h1>
+    Your listings deserve<br>
+    <span class="line2">to be</span> <span class="highlight">found.</span>
+  </h1>
+
+  <p class="hero-sub">
+    RankReady scores your shop listings against the signals that actually drive visibility today — not just keywords.
+  </p>
+
+  <div class="hero-cta">
+    <a href="#waitlist" class="btn-primary">
+      Get free early access
+      <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 7h10M8 3l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </a>
+    <a href="#how" class="btn-ghost">See how it works</a>
+  </div>
+
+  <p class="hero-social">Join <strong>1,400+</strong> sellers on the waitlist</p>
+</section>
+
+<!-- DEMO -->
+<div class="demo-wrap">
+  <div class="demo-card">
+    <div class="demo-topbar">
+      <div class="dots">
+        <div class="dot dot-r"></div>
+        <div class="dot dot-y"></div>
+        <div class="dot dot-g"></div>
+      </div>
+      <div class="demo-url">rankready.ai — listing analysis</div>
+    </div>
+    <div class="demo-body">
+      <div class="demo-listing">
+        <div class="listing-img">👟</div>
+        <div class="listing-title">Custom Gothic Platform Sneaker — Handmade</div>
+        <div class="listing-meta">Print on demand · Active listing</div>
+        <div class="listing-price">$58.00</div>
+      </div>
+      <div class="demo-score">
+        <div class="score-header">
+          <span class="score-label">Overall Score</span>
+        </div>
+        <div class="score-ring-wrap">
+          <svg width="100" height="100" viewBox="0 0 100 100">
+            <circle cx="50" cy="50" r="40" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="8"/>
+            <circle id="score-circle" cx="50" cy="50" r="40" fill="none" stroke="#F4A742" stroke-width="8"
+              stroke-linecap="round"
+              stroke-dasharray="251.2"
+              stroke-dashoffset="251.2"
+              transform="rotate(-90 50 50)"
+              style="transition: stroke-dashoffset 1.5s cubic-bezier(0.16, 1, 0.3, 1)"/>
+            <text x="50" y="46" text-anchor="middle" font-family="Syne" font-size="22" font-weight="800" fill="#F0EEE8" id="score-num">--</text>
+            <text x="50" y="62" text-anchor="middle" font-family="DM Sans" font-size="10" fill="#8A8880">/100</text>
+          </svg>
+        </div>
+        <div class="dimensions" id="dims">
+          <div class="dim-row">
+            <div class="dim-top"><span class="dim-name">Thumbnail quality</span><span class="dim-val ok" data-val="62">--</span></div>
+            <div class="dim-bar"><div class="dim-fill ok" data-pct="62"></div></div>
+          </div>
+          <div class="dim-row">
+            <div class="dim-top"><span class="dim-name">Title clarity</span><span class="dim-val poor" data-val="41">--</span></div>
+            <div class="dim-bar"><div class="dim-fill poor" data-pct="41"></div></div>
+          </div>
+          <div class="dim-row">
+            <div class="dim-top"><span class="dim-name">Tag coverage</span><span class="dim-val good" data-val="88">--</span></div>
+            <div class="dim-bar"><div class="dim-fill good" data-pct="88"></div></div>
+          </div>
+          <div class="dim-row">
+            <div class="dim-top"><span class="dim-name">Attribute fill</span><span class="dim-val poor" data-val="35">--</span></div>
+            <div class="dim-bar"><div class="dim-fill poor" data-pct="35"></div></div>
+          </div>
+          <div class="dim-row">
+            <div class="dim-top"><span class="dim-name">Description tone</span><span class="dim-val ok" data-val="70">--</span></div>
+            <div class="dim-bar"><div class="dim-fill ok" data-pct="70"></div></div>
+          </div>
+          <div class="dim-row">
+            <div class="dim-top"><span class="dim-name">Behavioral hooks</span><span class="dim-val poor" data-val="28">--</span></div>
+            <div class="dim-bar"><div class="dim-fill poor" data-pct="28"></div></div>
+          </div>
+        </div>
+        <button class="fix-btn" onclick="document.getElementById('waitlist').scrollIntoView({behavior:'smooth'})">
+          ✦ Get AI fix suggestions →
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- TICKER -->
+<div class="ticker-wrap">
+  <div class="ticker">
+    <span class="ticker-item">Thumbnail quality</span>
+    <span class="ticker-item">Title clarity score</span>
+    <span class="ticker-item">Tag coverage</span>
+    <span class="ticker-item">Attribute fill rate</span>
+    <span class="ticker-item">Description tone</span>
+    <span class="ticker-item">Behavioral hooks</span>
+    <span class="ticker-item">Pricing signals</span>
+    <span class="ticker-item">Thumbnail quality</span>
+    <span class="ticker-item">Title clarity score</span>
+    <span class="ticker-item">Tag coverage</span>
+    <span class="ticker-item">Attribute fill rate</span>
+    <span class="ticker-item">Description tone</span>
+    <span class="ticker-item">Behavioral hooks</span>
+    <span class="ticker-item">Pricing signals</span>
+  </div>
+</div>
+
+<!-- HOW IT WORKS -->
+<section id="how">
+  <div class="container">
+    <div class="reveal">
+      <div class="section-label">How it works</div>
+      <h2 class="section-title">From listing URL to action plan<br>in under 30 seconds.</h2>
+      <p class="section-sub">No integrations, no setup. Paste a URL and get a full health report instantly.</p>
+    </div>
+    <div class="steps reveal">
+      <div class="step">
+        <div class="step-num">01</div>
+        <span class="step-icon">🔗</span>
+        <h3>Paste your listing URL</h3>
+        <p>Drop any active listing URL into RankReady. Works with any marketplace shop, any category, any product type.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">02</div>
+        <span class="step-icon">🧠</span>
+        <h3>AI analyzes 7 dimensions</h3>
+        <p>Our engine scores your listing against the behavioral signals that drive visibility in today's AI-personalized feeds — not just keywords.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">03</div>
+        <span class="step-icon">⚡</span>
+        <h3>Get your fix queue</h3>
+        <p>Prioritized action items ranked by impact. Pro users get one-click AI rewrites for titles, descriptions, and tags.</p>
+      </div>
+    </div>
+
+    <div class="stat-bar reveal">
+      <div class="stat-item">
+        <div class="stat-num">5<span>.4M</span></div>
+        <div class="stat-label">Active marketplace sellers</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num">44<span>%</span></div>
+        <div class="stat-label">Of sales now happen via mobile app — where behavior drives rank, not search</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num">7</div>
+        <div class="stat-label">Scoring dimensions tied to actual 2025 algorithm signals</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 7 DIMENSIONS -->
+<section class="dims-section" style="background: var(--bg2);">
+  <div class="container">
+    <div class="reveal">
+      <div class="section-label">The 7 dimensions</div>
+      <h2 class="section-title">Every signal that matters.<br>Scored in one report.</h2>
+      <p class="section-sub">Reverse-engineered from the 2025 algorithm shift. Most tools still only check keywords — we check what actually moves rank today.</p>
+    </div>
+    <div class="dims-grid reveal">
+      <div class="dim-card">
+        <div class="dim-card-icon">🖼️</div>
+        <div class="dim-card-name">Thumbnail</div>
+        <div class="dim-card-desc">First visual impression and click magnetism</div>
+      </div>
+      <div class="dim-card">
+        <div class="dim-card-icon">✍️</div>
+        <div class="dim-card-name">Title</div>
+        <div class="dim-card-desc">Clarity and front-loaded relevance</div>
+      </div>
+      <div class="dim-card">
+        <div class="dim-card-icon">🏷️</div>
+        <div class="dim-card-name">Tags</div>
+        <div class="dim-card-desc">Coverage density and phrase alignment</div>
+      </div>
+      <div class="dim-card">
+        <div class="dim-card-icon">📋</div>
+        <div class="dim-card-name">Attributes</div>
+        <div class="dim-card-desc">Fill rate for curated feed eligibility</div>
+      </div>
+      <div class="dim-card">
+        <div class="dim-card-icon">💬</div>
+        <div class="dim-card-name">Description</div>
+        <div class="dim-card-desc">Tone, originality, and buyer language</div>
+      </div>
+      <div class="dim-card">
+        <div class="dim-card-icon">🎯</div>
+        <div class="dim-card-name">Behavior</div>
+        <div class="dim-card-desc">Hooks that trigger saves and dwell time</div>
+      </div>
+      <div class="dim-card">
+        <div class="dim-card-icon">💰</div>
+        <div class="dim-card-name">Pricing</div>
+        <div class="dim-card-desc">Competitive signal and perceived value</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section id="features" class="features-section">
+  <div class="container">
+    <div class="reveal">
+      <div class="section-label">Features</div>
+      <h2 class="section-title">Everything you need.<br>Nothing you don't.</h2>
+    </div>
+    <div class="features-grid reveal">
+      <div class="feature-card">
+        <div class="feature-icon">🔬</div>
+        <h3>Instant listing analysis</h3>
+        <p>Paste any listing URL and get a full 7-dimension health report in seconds. No account needed to try it.</p>
+        <span class="feature-tag">Free</span>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🧩</div>
+        <h3>Chrome extension</h3>
+        <p>Score appears as a sidebar while you're editing listings in your shop dashboard. Fix issues without breaking your flow.</p>
+        <span class="feature-tag pro">Pro</span>
+      </div>
+      <div class="feature-card wide">
+        <div class="feature-icon">✨</div>
+        <h3>AI rewrite suggestions</h3>
+        <p>One click generates an improved title, description, and full tag set — trained on your listing context, not generic templates. The AI understands your product, your category, and your buyer's language.</p>
+        <span class="feature-tag pro">Pro</span>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">📊</div>
+        <h3>Whole shop scanner</h3>
+        <p>Score every listing at once. See your shop's average health and a prioritized queue sorted by fix impact.</p>
+        <span class="feature-tag pro">Pro</span>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🔔</div>
+        <h3>Algorithm change alerts</h3>
+        <p>When the algorithm shifts (and it will), you'll be the first to know — with specific action steps for your shop.</p>
+        <span class="feature-tag pro">Pro</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section id="pricing" class="pricing-section">
+  <div class="container">
+    <div class="reveal" style="text-align:center">
+      <div class="section-label">Pricing</div>
+      <h2 class="section-title">Simple pricing.<br>Real results.</h2>
+      <p class="section-sub" style="margin: 0 auto;">Start free. Upgrade when you're hooked.</p>
+    </div>
+    <div class="pricing-grid reveal">
+      <div class="pricing-card">
+        <div class="plan-name">Free</div>
+        <div class="plan-price">$0 <span>/ forever</span></div>
+        <div class="plan-desc">Try it. Get value. Decide later.</div>
+        <ul class="plan-features">
+          <li class="yes"><span class="plan-check">✓</span>3 listing scores/month</li>
+          <li class="yes"><span class="plan-check">✓</span>7-dimension report</li>
+          <li class="yes"><span class="plan-check">✓</span>Top 3 fix suggestions</li>
+          <li><span class="plan-x">—</span>AI rewrite suggestions</li>
+          <li><span class="plan-x">—</span>Whole shop scan</li>
+          <li><span class="plan-x">—</span>Chrome extension</li>
+        </ul>
+        <a href="#waitlist" class="plan-cta ghost">Get started free</a>
+      </div>
+      <div class="pricing-card featured">
+        <div class="featured-badge">⭐ Most popular</div>
+        <div class="plan-name">Pro</div>
+        <div class="plan-price">$9 <span>/ month</span></div>
+        <div class="plan-desc">For serious sellers who want to grow.</div>
+        <ul class="plan-features">
+          <li class="yes"><span class="plan-check">✓</span>Unlimited listing scores</li>
+          <li class="yes"><span class="plan-check">✓</span>AI rewrite suggestions</li>
+          <li class="yes"><span class="plan-check">✓</span>Whole shop scanner</li>
+          <li class="yes"><span class="plan-check">✓</span>Chrome extension</li>
+          <li class="yes"><span class="plan-check">✓</span>Priority fix queue</li>
+          <li class="yes"><span class="plan-check">✓</span>Algorithm change alerts</li>
+        </ul>
+        <a href="#waitlist" class="plan-cta primary">Get early access</a>
+      </div>
+      <div class="pricing-card">
+        <div class="plan-name">Agency</div>
+        <div class="plan-price">$29 <span>/ month</span></div>
+        <div class="plan-desc">Manage multiple shops at once.</div>
+        <ul class="plan-features">
+          <li class="yes"><span class="plan-check">✓</span>Everything in Pro</li>
+          <li class="yes"><span class="plan-check">✓</span>Up to 10 shop profiles</li>
+          <li class="yes"><span class="plan-check">✓</span>Competitor benchmarking</li>
+          <li class="yes"><span class="plan-check">✓</span>White-label reports</li>
+          <li class="yes"><span class="plan-check">✓</span>CSV export</li>
+          <li class="yes"><span class="plan-check">✓</span>POD profit calculator</li>
+        </ul>
+        <a href="#waitlist" class="plan-cta ghost">Get early access</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- WAITLIST -->
+<section id="waitlist" class="waitlist-section">
+  <div class="waitlist-glow"></div>
+  <div class="container">
+    <div class="reveal">
+      <div class="section-label" style="text-align:center">Early access</div>
+      <h2 class="section-title">Be first.<br>Rank before they do.</h2>
+      <p class="section-sub">Join the waitlist for free early access + 3 months of Pro for the price of Free when we launch.</p>
+    </div>
+    <div class="reveal">
+      <div class="waitlist-form" id="wl-form">
+        <input type="email" class="waitlist-input" id="wl-email" placeholder="your@email.com">
+        <button class="waitlist-btn" onclick="joinWaitlist()">Reserve my spot →</button>
+      </div>
+      <div class="waitlist-success" id="wl-success">
+        ✓ You're on the list! We'll email you the moment early access opens. You're #<strong id="wl-num">1,412</strong>.
+      </div>
+      <p class="waitlist-note">No credit card. No spam. Unsubscribe anytime.</p>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <span class="footer-copy">© 2025 RankReady.ai — The term 'Etsy' is a trademark of Etsy, Inc. This tool uses publicly available data but is not endorsed or certified by Etsy, Inc.</span>
+    <div class="footer-links">
+      <a href="#" class="footer-link">Privacy</a>
+      <a href="#" class="footer-link">Terms</a>
+      <a href="#" class="footer-link">Contact</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // Sticky nav
+  const nav = document.getElementById('nav');
+  window.addEventListener('scroll', () => {
+    nav.classList.toggle('scrolled', window.scrollY > 40);
+  });
+
+  // Scroll reveal
+  const reveals = document.querySelectorAll('.reveal');
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('visible');
+        io.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.1 });
+  reveals.forEach(el => io.observe(el));
+
+  // Animate score demo when visible
+  let scoreAnimated = false;
+  const demoEl = document.querySelector('.demo-wrap');
+  const demoIO = new IntersectionObserver((entries) => {
+    if (entries[0].isIntersecting && !scoreAnimated) {
+      scoreAnimated = true;
+      animateScore();
+    }
+  }, { threshold: 0.3 });
+  demoIO.observe(demoEl);
+
+  function animateScore() {
+    const score = 54;
+    const circumference = 251.2;
+    const offset = circumference - (score / 100) * circumference;
+
+    setTimeout(() => {
+      document.getElementById('score-circle').style.strokeDashoffset = offset;
+      // Count up
+      let current = 0;
+      const numEl = document.getElementById('score-num');
+      const interval = setInterval(() => {
+        current = Math.min(current + 2, score);
+        numEl.textContent = current;
+        if (current >= score) clearInterval(interval);
+      }, 28);
+    }, 400);
+
+    // Animate bars
+    document.querySelectorAll('.dim-fill').forEach((bar, i) => {
+      const pct = bar.dataset.pct;
+      setTimeout(() => {
+        bar.style.width = pct + '%';
+      }, 600 + i * 120);
+    });
+
+    // Animate values
+    document.querySelectorAll('.dim-val').forEach((val, i) => {
+      const target = parseInt(val.dataset.val);
+      setTimeout(() => {
+        let n = 0;
+        const iv = setInterval(() => {
+          n = Math.min(n + 3, target);
+          val.textContent = n;
+          if (n >= target) clearInterval(iv);
+        }, 20);
+      }, 600 + i * 120);
+    });
+  }
+
+  // Waitlist
+  let count = 1411;
+  function joinWaitlist() {
+    const email = document.getElementById('wl-email').value;
+    if (!email || !email.includes('@')) {
+      document.getElementById('wl-email').style.borderColor = '#F66B6B';
+      setTimeout(() => document.getElementById('wl-email').style.borderColor = '', 1500);
+      return;
+    }
+    count++;
+    document.getElementById('wl-form').style.display = 'none';
+    document.getElementById('wl-num').textContent = count.toLocaleString();
+    document.getElementById('wl-success').classList.add('show');
+  }
+
+  // Enter key on waitlist
+  document.getElementById('wl-email').addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') joinWaitlist();
+  });
+</script>
+</body>
+</html>
